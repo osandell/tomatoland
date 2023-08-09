@@ -8,19 +8,19 @@ break_counter=600
 pause() {
     case "$status" in
     "running")
-        printf " $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>   %d</span>","class":"pomodoro"}\n' "$pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland.json
         status=paused
         ;;
     "awaiting_break_start")
-        printf "▶️ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>▶️ %d</span>","class":"pomodoro"}\n' "$pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland.json
         status=break_running
         ;;
     "break_running")
-        printf "▶ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>▶️ %d</span>","class":"pomodoro"}\n' "$pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland.json
         status=break_running
         ;;
     *)
-        printf "▶️ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>▶️ %d</span>","class":"pomodoro"}\n' "$pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland.json
         status=running
         ;;
     esac
@@ -28,17 +28,17 @@ pause() {
 
 reset() {
     pomodoro_counter=1800
-    printf "▶️ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
+    printf '{"text":"<span>▶️ %d</span>","class":"pomodoro"}\n' "$pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland.json
     break_counter=600
     status=resetted
 }
 
 reset_and_start() {
     pomodoro_counter=1800
-    printf "▶️ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
+    printf '{"text":"<span>▶️ %d</span>","class":"pomodoro"}\n' "$pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland.json
     break_counter=600
     status=running
-    # aplay ~/Downloads/file.wav &
+    aplay ~/Downloads/file.wav &
 }
 
 custom_action() {
@@ -56,13 +56,13 @@ custom_action() {
 }
 
 status=resetted
-printf " $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
+printf '{"text":"<span>   %d</span>","class":"pomodoro"}\n' "$pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland.json
 trap 'custom_action' USR1
 
 while true; do
     case $status in
     running)
-        printf "▶️ $((pomodoro_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>▶️ %d</span>","class":"pomodoro"}\n' "$((pomodoro_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland.json
         sleep 1
         ((pomodoro_counter -= 1))
         if [ $pomodoro_counter -eq 0 ]; then
@@ -71,19 +71,19 @@ while true; do
         fi
         ;;
     paused)
-        printf " $((pomodoro_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>   %d</span>","class":"pomodoro"}\n' "$((pomodoro_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland.json
         sleep 1
         ;;
     resetted)
-        printf "  $((pomodoro_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>   %d</span>","class":"pomodoro"}\n' "$((pomodoro_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland.json
         sleep 1
         ;;
     awaiting_break_start)
-        printf "   $((break_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>   %d</span>","class":"break"}\n' "$((break_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland.json
         sleep 1
         ;;
     break_running)
-        printf "▶️ $((break_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>▶️ %d</span>","class":"break"}\n' "$((break_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland.json
         sleep 1
         ((break_counter -= 1))
         if [ $break_counter -eq 0 ]; then
@@ -92,7 +92,7 @@ while true; do
         fi
         ;;
     break_paused)
-        printf "   $((break_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland
+        printf '{"text":"<span>   %d</span>","class":"break"}\n' "$((break_counter / 60))" >$XDG_RUNTIME_DIR/tomatoland.json
         sleep 1
         ;;
     *)
