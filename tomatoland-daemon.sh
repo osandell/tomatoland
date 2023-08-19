@@ -8,18 +8,22 @@ break_counter=600
 pause() {
     case "$status" in
     "running")
+        aplay "$(dirname "$0")/pause.wav" &
         printf " $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
         status=paused
         ;;
     "awaiting_break_start")
+        aplay "$(dirname "$0")/play.wav" &
         printf "▶️ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
         status=break_running
         ;;
     "break_running")
+        aplay "$(dirname "$0")/play.wav" &
         printf "▶ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
         status=break_running
         ;;
     *)
+        aplay "$(dirname "$0")/play.wav" &
         printf "▶️ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
         status=running
         ;;
@@ -27,6 +31,7 @@ pause() {
 }
 
 reset() {
+    aplay "$(dirname "$0")/next.wav" &
     pomodoro_counter=1800
     printf "▶️ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
     break_counter=600
@@ -34,11 +39,11 @@ reset() {
 }
 
 reset_and_start() {
+    aplay "$(dirname "$0")/next.wav" &
     pomodoro_counter=1800
     printf "▶️ $pomodoro_counter" >$XDG_RUNTIME_DIR/tomatoland
     break_counter=600
     status=running
-    # aplay ~/Downloads/file.wav &
 }
 
 custom_action() {
@@ -67,7 +72,7 @@ while true; do
         ((pomodoro_counter -= 1))
         if [ $pomodoro_counter -eq 0 ]; then
             status=awaiting_break_start
-            aplay ~/Downloads/file.wav &
+            aplay "$(dirname "$0")/smw_save_menu.wav" &
         fi
         ;;
     paused)
