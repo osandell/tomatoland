@@ -19,7 +19,7 @@ pause() {
     case "$status" in
     "running")
         $AUDIO_PLAYER "$(dirname "$0")/pause.wav" &
-        printf " $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
+        printf "⏸️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
         status=paused
         ;;
     "awaiting_break_start")
@@ -71,7 +71,7 @@ custom_action() {
 }
 
 status=resetted
-printf " $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
+printf "⏸️$pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
 trap 'custom_action' USR1
 
 while true; do
@@ -86,15 +86,15 @@ while true; do
         fi
         ;;
     paused)
-        printf " $((pomodoro_counter / 60))" >"$RUNTIME_DIR/tomatoland"
+        printf "⏸️ $((pomodoro_counter / 60))" >"$RUNTIME_DIR/tomatoland"
         sleep 1
         ;;
     resetted)
-        printf "  $((pomodoro_counter / 60))" >"$RUNTIME_DIR/tomatoland"
+        printf "⏸️ $((pomodoro_counter / 60))" >"$RUNTIME_DIR/tomatoland"
         sleep 1
         ;;
     awaiting_break_start)
-        printf "   $((break_counter / 60))" >"$RUNTIME_DIR/tomatoland"
+        printf "⏸️ $((break_counter / 60))" >"$RUNTIME_DIR/tomatoland"
         sleep 1
         ;;
     break_running)
@@ -107,7 +107,7 @@ while true; do
         fi
         ;;
     break_paused)
-        printf "   $((break_counter / 60))" >"$RUNTIME_DIR/tomatoland"
+        printf "⏸️ $((break_counter / 60))" >"$RUNTIME_DIR/tomatoland"
         sleep 1
         ;;
     *)
