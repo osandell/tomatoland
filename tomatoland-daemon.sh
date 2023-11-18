@@ -15,53 +15,54 @@ echo $$ >"$RUNTIME_DIR/tomatoland.pid"
 pomodoro_counter=1800
 break_counter=600
 
-pause() {
-    case "$status" in
-    "running")
-        $AUDIO_PLAYER "$(dirname "$0")/pause.wav" &
-        printf "⏸️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
-        status=paused
-        ;;
-    "awaiting_break_start")
-        $AUDIO_PLAYER "$(dirname "$0")/play.wav" &
-        printf "▶️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
-        status=break_running
-        ;;
-    "break_running")
-        $AUDIO_PLAYER "$(dirname "$0")/play.wav" &
-        printf "▶ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
-        status=break_running
-        ;;
-    *)
-        $AUDIO_PLAYER "$(dirname "$0")/play.wav" &
-        printf "▶️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
-        status=running
-        ;;
-    esac
-}
-
-reset() {
-    $AUDIO_PLAYER "$(dirname "$0")/next.wav" &
-    pomodoro_counter=1800
-    printf "▶️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
-    break_counter=600
-    status=resetted
-}
-
-reset_and_start() {
-    $AUDIO_PLAYER "$(dirname "$0")/next.wav" &
+start() {
+    $AUDIO_PLAYER "$(dirname "$0")/turning-page.wav" &
     pomodoro_counter=1800
     printf "▶️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
     break_counter=600
     status=running
 }
 
+stop() {
+    $AUDIO_PLAYER "$(dirname "$0")/book-closing.wav" &
+    pomodoro_counter=1800
+    printf "▶️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
+    break_counter=600
+    status=stopped
+}
+
+pause() {
+    case "$status" in
+    "running")
+        $AUDIO_PLAYER "$(dirname "$0")/pause-tape-recorder.wav" &
+        printf "⏸️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
+        status=paused
+        ;;
+    "awaiting_break_start")
+        $AUDIO_PLAYER "$(dirname "$0")/play-tape-recorder.wav" &
+        printf "▶️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
+        status=break_running
+        ;;
+    "break_running")
+        $AUDIO_PLAYER "$(dirname "$0")/play-tape-recorder.wav" &
+        printf "▶ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
+        status=break_running
+        ;;
+    *)
+        $AUDIO_PLAYER "$(dirname "$0")/play-tape-recorder.wav" &
+        printf "▶️ $pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
+        status=running
+        ;;
+    esac
+}
+
 custom_action() {
     if [ -f "$RUNTIME_DIR/tomatoland.arg" ]; then
         custom_argument=$(cat "$RUNTIME_DIR/tomatoland.arg")
         case $custom_argument in
+        start) start ;;
+        stop) stop ;;
         pause) pause ;;
-        reset) reset_and_start ;;
         *) echo "Unknown argument: $custom_argument" ;;
         esac
         rm $RUNTIME_DIR/tomatoland.arg
@@ -70,7 +71,7 @@ custom_action() {
     fi
 }
 
-status=resetted
+status=stopped
 printf "⏸️$pomodoro_counter" >"$RUNTIME_DIR/tomatoland"
 trap 'custom_action' USR1
 
@@ -89,7 +90,7 @@ while true; do
         printf "⏸️ $((pomodoro_counter / 60))" >"$RUNTIME_DIR/tomatoland"
         sleep 1
         ;;
-    resetted)
+    stopped)
         printf "⏸️ $((pomodoro_counter / 60))" >"$RUNTIME_DIR/tomatoland"
         sleep 1
         ;;
