@@ -8,7 +8,6 @@ elif grep -q microsoft /proc/version; then
     # WSL
     RUNTIME_DIR="/home/olof/dev/osandell/tomatoland"
     AUDIO_PLAYER="/bin/aplay"
-    PULSE_SERVER=$(ip route | grep default | awk '{print $3}')
 else
     # Assume Linux
     RUNTIME_DIR="$RUNTIME_DIR"
